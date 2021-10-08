@@ -1,7 +1,5 @@
 @safetestset "ChebyshevImplementation" begin include("test_ChebyshevImplementation.jl") end
 
-# @safetestset "SecondPoincareInvariant Interface" begin include("test_interface.jl") end
-
 # @safetestset "Free Particle" begin
 #     using PoincareInvariants
 
