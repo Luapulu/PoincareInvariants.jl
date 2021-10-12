@@ -8,12 +8,13 @@ SUITE["SecondPoincareInvariants"] = BenchmarkGroup()
 
 SUITE["SecondPoincareInvariants"]["canonical"] = BenchmarkGroup()
 for N in [100 * 100, 1000 * 1000], D in [2, 12, 100]
-    name = "SecondPoincareInvariant{$D, Float64}(Ω, $N)"
-    pinv = SecondPoincareInvariant{D, Float64}(CanonicalSymplecticMatrix(D), N)
-    
+    name = "SecondPoincareInvariant{Float64}(Ω, $D, $N)"
+
     SUITE["SecondPoincareInvariants"]["canonical"][name] =
-        @benchmarkable compute($pinv, phasepoints) setup=begin
-            phasepoints = rand($(pinv.N), $D)
+        @benchmarkable compute!(pinv, phasepoints, 0, nothing) setup=begin
+            Ω(z, t, p) = CanonicalSymplecticMatrix($D)
+            pinv = SecondPoincareInvariant{Float64}(Ω, $D, $N, Val(false))
+            phasepoints = rand(getpointnum(pinv), $D)
         end
 end
 

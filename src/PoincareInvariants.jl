@@ -2,7 +2,7 @@ module PoincareInvariants
 
 using Reexport
 
-export AbstractPoincareInvariant, compute, getpoints, getpointnum
+export AbstractPoincareInvariant, compute!, getdim, getpoints, getpointnum
 
 """
     AbstractPoincareInvariant
@@ -14,7 +14,7 @@ abstract type AbstractPoincareInvariant end
 """
     compute!(pinv::AbstractPoincareInvariant, args...)
 
-computes a Poincaré invariant. 
+computes a Poincaré invariant.
 """
 function compute! end
 

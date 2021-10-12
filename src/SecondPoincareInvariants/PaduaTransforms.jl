@@ -235,8 +235,10 @@ function tovalsmat!(mat::Matrix{T}, from::AbstractVector, degree::Integer) where
         # 0 x
         # x 0
 
-        mat[1:2:end] .= from
-		mat[2:2:end] .= zero(T)
+        @inbounds for i in 1:length(from)
+            mat[2i - 1] = from[i]
+		    mat[2i] = zero(T)
+        end
     else
         @assert iseven(degree)
         # x 0 x
@@ -509,7 +511,9 @@ function fromvalsmat!(to::AbstractVector, mat::Matrix, degree::Integer)
         # 0 x
         # x 0
 
-		to .= mat[1:2:end]
+        @inbounds for i in 1:length(to)
+		    to[i] = mat[2i - 1]
+        end
 	else
 		@assert iseven(degree)
 		# x 0 x

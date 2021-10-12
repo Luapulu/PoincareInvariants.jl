@@ -1,6 +1,7 @@
 @reexport module CanonicalSymplecticStructures
 
 import Base
+import LinearAlgebra
 
 export CanonicalSymplecticMatrix
 
@@ -24,6 +25,18 @@ function Base.getindex(C::CanonicalSymplecticMatrix{T}, i1::Int, i2::Int) where 
     else
         return T(0)
     end
+end
+
+function LinearAlgebra.dot(x::AbstractVector, C::CanonicalSymplecticMatrix, y::AbstractVector)
+    m = C.mid
+    axes(x, 1) == axes(y, 1) == 1:2m || error()
+    s = zero(promote_type(eltype(x), eltype(y)))
+    @inbounds for i in 1:m
+        s += y[i] * x[m + i]
+        s -= y[m + i] * x[i]
+    end
+
+    s
 end
 
 end  # module

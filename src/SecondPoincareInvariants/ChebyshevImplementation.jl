@@ -7,6 +7,7 @@ Chebyshev polynomials
 module ChebyshevImplementation
 
 using ...PoincareInvariants: @argcheck
+import ...PoincareInvariants: compute!, getpoints, getpointnum
 
 using Base: Callable
 using LinearAlgebra
@@ -128,12 +129,12 @@ function ChebyshevPlan{T}(Ω::Callable, D::Integer, N::Integer, ::Val{inplace}) 
 	degree = getdegree(nextpaduanum(N))
 
 	paduaplan = PaduaTransformPlan{T}(degree)
-	phasecoeffs = zeros(degree+1, degree+1, D)
+	phasecoeffs = zeros(T, degree+1, degree+1, D)
 	diffplan = DiffPlan{T}(degree)
 	∂x = Array{T, 3}(undef, degree+1, degree+1, D)
 	∂y = Array{T, 3}(undef, degree+1, degree+1, D)
 	intplan = getintplan(T, Ω, D, degree, Val(inplace))
-	intcoeffs = Matrix{T}(undef, degree+1, degree+1)
+	intcoeffs = zeros(T, degree+1, degree+1)
 	integrator = getintegrator(T, degree)
 
 	ChebyshevPlan{T, typeof(intplan), typeof(paduaplan)}(
@@ -141,7 +142,7 @@ function ChebyshevPlan{T}(Ω::Callable, D::Integer, N::Integer, ::Val{inplace}) 
 	)
 end
 
-function _compute!(plan::ChebyshevPlan, Ω::Callable, phasepoints, t, p)
+function compute!(plan::ChebyshevPlan, Ω::Callable, phasepoints::AbstractMatrix, t, p)
     paduatransform!(plan.phasecoeffs, plan.paduaplan, phasepoints)
     differentiate!(plan.∂x, plan.∂y, plan.diffplan, plan.phasecoeffs)
     getintegrand!(plan.intcoeffs, plan.intplan, Ω, phasepoints, t, p, plan.∂x, plan.∂y)
@@ -154,5 +155,12 @@ end
 #     getintegrand!(plan.intcoeffs, plan.intplan, Ω, plan.∂x, plan.∂y)
 #     integrate(plan.intcoeffs, plan.intplan)
 # end
+
+## getpoints and getpointnum ##
+
+getpointnum(plan::ChebyshevPlan) = getpaduanum(plan.degree)
+getpoints(plan::ChebyshevPlan) = map(getpaduapoints(plan.degree)) do v
+	(v .+ 1) ./ 2
+end
 
 end  # module ChebyshevImplementation

@@ -76,7 +76,7 @@ end
     end
 end
 
-@safetestset "weight!" begin
+@safetestset "weight! and invweight!" begin
     using PoincareInvariants.SecondPoincareInvariants.ChebyshevImplementation.PaduaTransforms:
         weight!, invweight!
 
