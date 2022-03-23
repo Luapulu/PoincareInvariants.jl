@@ -54,6 +54,9 @@ getpointspec(N, P) = getpointnum(N, P)
 include("Chebyshev.jl")
 include("FiniteDifferences.jl")
 
-const DEFAULT_PLAN_TYPE = Chebyshev.ChebyshevPlan
+using .Chebyshev: ChebyshevPlan
+using .FiniteDifferences: FiniteDiffPlan
+
+const DEFAULT_PLAN_TYPE = ChebyshevPlan
 
 end  # module SecondPoincareInvariants
